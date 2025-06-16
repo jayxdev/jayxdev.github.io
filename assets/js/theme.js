@@ -224,18 +224,25 @@
         
         
         /** Gallery - Magnific popup */
-        if ($.fn.magnificPopup){
-            $galleryGrid.magnificPopup({
-                delegate: 'a.zoom',
+        if ($.fn.magnificPopup) {
+            $('.zoom').magnificPopup({
                 type: 'image',
-                mainClass: 'mfp-fade',
-                gallery:{
-                    enabled: true,
-                    navigateByImgClick: true,
-                    preload: [0,2],
-                    tPrev: 'Previous',
-                    tNext: 'Next',
-                    tCounter: '<span class="mfp-counter-curr">%curr%</span> of <span class="mfp-counter-total">%total%</span>'
+                closeOnContentClick: true,
+                closeBtnInside: false,
+                fixedContentPos: true,
+                mainClass: 'mfp-no-margins mfp-with-zoom',
+                image: {
+                    verticalFit: true
+                },
+                callbacks: {
+                    elementParse: function(item) {
+                        // If the link has a data-external-link attribute, open that URL instead
+                        var externalLink = $(item.el[0]).data('external-link');
+                        if (externalLink) {
+                            window.open(externalLink, '_blank');
+                            return false; // Prevent the popup from opening
+                        }
+                    }
                 }
             });
         }
@@ -400,5 +407,14 @@
                 }
             });
         }
+
+        // Handle external links for project gallery
+        $('.gallery-link .zoom').on('click', function(e) {
+            var externalLink = $(this).data('external-link');
+            if (externalLink) {
+                e.preventDefault();
+                window.open(externalLink, '_blank');
+            }
+        });
     });
 })(jQuery);
